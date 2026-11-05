@@ -1,0 +1,247 @@
+algoritmo "Sistema_Caixa_CRUD"
+// Autor: Desenvolvedor Sênior (Gemini)
+// Finalidade: CRUD Completo de Produtos + Módulo de Vendas (Frente de Caixa)
+
+var
+  // --- BANCO DE DADOS DE PRODUTOS ---
+  nome_prod: vetor [1..50] de caractere
+  cod_prod: vetor [1..50] de inteiro
+  preco_prod: vetor [1..50] de real
+  total_produtos: inteiro
+  
+  // --- CARRINHO DE COMPRAS (Venda Atual) ---
+  cart_nome: vetor [1..50] de caractere
+  cart_qtd: vetor [1..50] de inteiro
+  cart_preco, cart_subtotal: vetor [1..50] de real
+  itens_venda: inteiro
+  total_venda: real
+  
+  // --- VARIÁVEIS DE CONTROLE ---
+  opcao, sub_opcao, i, j, indice_acao, codigo_busca, indice_encontrado: inteiro
+  resp, tecla_voltar: caractere
+
+// Sub-rotina para imprimir o cabeçalho fixo
+procedimento CabecalhoLoja()
+inicio
+  limpatela
+  escreval("==================================================")
+  escreval("             GESTÃO DE PRODUTOS                  ")
+  escreval(" Sistema de Gestao e Frente de Caixa - Modulo PDV ")
+  escreval("==================================================")
+  escreval("")
+fimprocedimento
+
+inicio
+  total_produtos <- 0
+
+  // LOOP PRINCIPAL DO SISTEMA
+  repita
+    CabecalhoLoja()
+    escreval("-------------- MENU PRINCIPAL --------------")
+    escreval(" 1 - Incluir Produto")
+    escreval(" 2 - Excluir Produto")
+    escreval(" 3 - Lista de Produtos (Editar Cadastro)")
+    escreval(" 4 - ABRIR CAIXA (Fazer Venda)")
+    escreval(" 5 - Sair do Sistema")
+    escreval("--------------------------------------------")
+    escreva("Escolha uma opção: ")
+    leia(opcao)
+
+    escolha opcao
+      // ====================================================
+      // OPÇÃO 1: INCLUIR PRODUTO (Create)
+      // ====================================================
+      caso 1
+        repita
+          CabecalhoLoja()
+          se (total_produtos < 50) entao
+            total_produtos <- total_produtos + 1
+            escreval("--- CADASTRAR PRODUTO (", total_produtos, "/50) ---")
+            
+            escreva("Código Numérico do Produto: ")
+            leia(cod_prod[total_produtos])
+            escreva("Nome/Descrição: ")
+            leia(nome_prod[total_produtos])
+            escreva("Valor Unitário (R$): ")
+            leia(preco_prod[total_produtos])
+
+            escreval("--> Produto salvo no sistema!")
+            escreval("")
+            escreva("Deseja cadastrar outro produto? (S/N): ")
+            leia(resp)
+          senao
+            escreval("LIMITE ATINGIDO (50 produtos).")
+            resp <- "N"
+            escreva("Pressione ENTER para voltar...")
+            leia(tecla_voltar)
+          fimse
+        ate (resp = "N") ou (resp = "n")
+
+      // ====================================================
+      // OPÇÃO 2: EXCLUIR PRODUTO (Delete)
+      // ====================================================
+      caso 2
+        se (total_produtos = 0) entao
+          CabecalhoLoja()
+          escreval("Nenhum produto cadastrado.")
+          escreva("Pressione ENTER para voltar...")
+          leia(tecla_voltar)
+        senao
+          CabecalhoLoja()
+          escreval("--- EXCLUIR PRODUTO ---")
+          // Lista os produtos para o usuário saber qual índice escolher
+          para i de 1 ate total_produtos faca
+            escreval("Índice [", i, "] - Cód: ", cod_prod[i], " | ", nome_prod[i])
+          fimpara
+          
+          escreval("-----------------------")
+          escreva("Digite o ÍNDICE do produto para EXCLUIR (ou 0 para cancelar): ")
+          leia(indice_acao)
+
+          se (indice_acao > 0) e (indice_acao <= total_produtos) entao
+            // Shift Left para sobrescrever e apagar o item
+            para i de indice_acao ate total_produtos - 1 faca
+              nome_prod[i] <- nome_prod[i+1]
+              cod_prod[i] <- cod_prod[i+1]
+              preco_prod[i] <- preco_prod[i+1]
+            fimpara
+            total_produtos <- total_produtos - 1
+            escreval("Produto excluído com sucesso!")
+            escreva("Pressione ENTER para voltar...")
+            leia(tecla_voltar)
+          fimse
+        fimse
+
+      // ====================================================
+      // OPÇÃO 3: LISTAR E EDITAR (Read e Update)
+      // ====================================================
+      caso 3
+        se (total_produtos = 0) entao
+          CabecalhoLoja()
+          escreval("Nenhum produto cadastrado.")
+          escreva("Pressione ENTER para voltar...")
+          leia(tecla_voltar)
+        senao
+          repita // Submenu de Edição
+            CabecalhoLoja()
+            escreval("--- ESTOQUE CADASTRADO ---")
+            para i de 1 ate total_produtos faca
+              escreval("Índice [", i, "] | Cód: ", cod_prod[i], " | Produto: ", nome_prod[i], " | R$ ", preco_prod[i]:1:2)
+            fimpara
+            escreval("--------------------------")
+            escreval("1 - Editar um Produto")
+            escreval("0 - Voltar ao Menu Principal")
+            escreva("Opção: ")
+            leia(sub_opcao)
+
+            se (sub_opcao = 1) entao
+              escreva("Digite o ÍNDICE do produto que deseja alterar: ")
+              leia(indice_acao)
+              
+              se (indice_acao > 0) e (indice_acao <= total_produtos) entao
+                escreval("- Digite os novos dados para '", nome_prod[indice_acao], "' -")
+                escreva("Novo Código: ")
+                leia(cod_prod[indice_acao])
+                escreva("Novo Nome: ")
+                leia(nome_prod[indice_acao])
+                escreva("Novo Preço (R$): ")
+                leia(preco_prod[indice_acao])
+                escreval("-> Cadastro atualizado com sucesso!")
+                escreva("Pressione ENTER para continuar...")
+                leia(tecla_voltar)
+              fimse
+            fimse
+          ate (sub_opcao = 0)
+        fimse
+
+      // ====================================================
+      // OPÇÃO 4: CAIXA / FRENTE DE VENDAS
+      // ====================================================
+      caso 4
+        se (total_produtos = 0) entao
+          CabecalhoLoja()
+          escreval("Você precisa cadastrar produtos antes de vender!")
+          escreva("Pressione ENTER para voltar...")
+          leia(tecla_voltar)
+        senao
+          itens_venda <- 0
+          total_venda <- 0
+          
+          repita
+            CabecalhoLoja()
+            escreval("--- FRENTE DE CAIXA: PRODUTOS DISPONÍVEIS ---")
+            para i de 1 ate total_produtos faca
+              escreval("Cód: ", cod_prod[i], " | ", nome_prod[i], " | R$ ", preco_prod[i]:1:2)
+            fimpara
+            escreval("---------------------------------------------")
+            
+            escreva("Digite o CÓDIGO do produto que o cliente quer comprar: ")
+            leia(codigo_busca)
+
+            // Lógica de busca: procura no vetor em qual índice está esse código
+            indice_encontrado <- 0
+            para i de 1 ate total_produtos faca
+              se (cod_prod[i] = codigo_busca) entao
+                indice_encontrado <- i
+              fimse
+            fimpara
+
+            se (indice_encontrado > 0) entao
+              itens_venda <- itens_venda + 1
+              // Copia os dados do banco para o Carrinho de Compras
+              cart_nome[itens_venda] <- nome_prod[indice_encontrado]
+              cart_preco[itens_venda] <- preco_prod[indice_encontrado]
+              
+              escreva("Quantidade vendida: ")
+              leia(cart_qtd[itens_venda])
+              
+              // Calcula subtotal e soma no total final
+              cart_subtotal[itens_venda] <- cart_qtd[itens_venda] * cart_preco[itens_venda]
+              total_venda <- total_venda + cart_subtotal[itens_venda]
+              
+              escreval("> ", cart_nome[itens_venda], " adicionado ao cupom!")
+            senao
+              escreval("ERRO: Código não encontrado!")
+            fimse
+            
+            escreval("")
+            escreva("Passar outro produto? (S/N): ")
+            leia(resp)
+            
+          ate (resp = "N") ou (resp = "n") ou (itens_venda = 50)
+
+          // IMPRESSÃO DA NOTA FISCAL (CUPOM)
+          CabecalhoLoja()
+          escreval("==================================================")
+          escreval("                  CUPOM FISCAL                    ")
+          escreval("==================================================")
+          escreval("QTD  | PRODUTO               | V. UN   | SUBTOTAL")
+          escreval("--------------------------------------------------")
+          
+          para i de 1 ate itens_venda faca
+            escreval(cart_qtd[i], " un | ", cart_nome[i], " | R$ ", cart_preco[i]:1:2, " | R$ ", cart_subtotal[i]:1:2)
+          fimpara
+          
+          escreval("--------------------------------------------------")
+          escreval("TOTAL DA VENDA: R$ ", total_venda:1:2)
+          escreval("==================================================")
+          escreval("Obrigado pela preferência!")
+          escreva("Pressione ENTER para fechar o caixa e voltar ao menu...")
+          leia(tecla_voltar)
+        fimse
+
+      // ====================================================
+      // OPÇÃO 5: SAIR
+      // ====================================================
+      caso 5
+        CabecalhoLoja()
+        escreval("Fechando o sistema. Até logo!")
+        
+      outrocaso
+        escreval("Opção inválida! Pressione ENTER para tentar novamente.")
+        leia(tecla_voltar)
+    fimescolha
+    
+  ate (opcao = 5)
+
+fimalgoritmo
