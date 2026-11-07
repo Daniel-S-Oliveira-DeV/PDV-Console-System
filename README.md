@@ -1,34 +1,39 @@
-# 🛒 Sistema de Frente de Caixa (PDV) - Console CRUD
+# 🛒 TechStore - Sistema ERP de Gestão e Frente de Caixa
 
-Este repositório contém o desenvolvimento de um sistema de Frente de Caixa (PDV) completo, demonstrando a evolução da lógica de programação estruturada para a Orientação a Objetos. O projeto foi construído como parte das atividades práticas do curso Técnico em Informática do Senac.
+Este repositório contém a evolução de um sistema de vendas e gestão de stock para uma loja de informática (TechStore). O projeto demonstra a transição de uma lógica estruturada básica para uma arquitetura robusta em **Java Orientado a Objetos (OOP)**, atuando como um micro-ERP completo rodando diretamente no terminal.
 
-## 📂 Estrutura do Projeto
+## 🚀 O que este sistema faz?
 
-O repositório está dividido em duas abordagens tecnológicas:
+Muito além de um simples registo de vendas, este sistema resolve problemas reais de gestão de loja, integrando três pilares fundamentais:
+- **Gestão de Materiais (Estoque):** CRUD completo com controlo dinâmico de quantidades.
+- **Frente de Caixa (PDV):** Validação em tempo real de disponibilidade de stock, captura automática de datas e geração de Cupão Fiscal detalhado.
+- **Balanço Financeiro:** Cruzamento do histórico de vendas com os custos de aquisição (COGS) para gerar relatórios de faturamento bruto e lucro líquido real.
 
-1. **VisuAlg_LogicaBase**: Contém o algoritmo estruturado (`.alg`) utilizando vetores (arrays) para simular uma base de dados na memória. Foco total em laços de repetição, lógica de ordenação (Shift) e manipulação direta de índices.
-2. **Java_Orientado_Objetos**: Contém a evolução do sistema (`.java`) utilizando classes (`Produto`, `ItemVenda`), listas dinâmicas (`ArrayList`) e tratamento de exceções (`try-catch`) para garantir a segurança da inserção de dados.
+## 🛠️ Tecnologias e Arquitetura
 
-## 🚀 Funcionalidades (Regras de Negócio)
+O repositório está dividido para demonstrar a evolução da engenharia de software:
 
-*   **CRUD Completo de Estoque**: Criação, Leitura, Atualização e Exclusão de produtos.
-*   **Frente de Caixa (Carrinho)**: Módulo isolado de vendas que busca produtos pelo código, calcula subtotais e gera uma nota fiscal temporária.
-*   **Validação à Prova de Falhas (Java)**: Bloqueio de falhas de sistema utilizando um `Scanner` seguro. Se o utilizador inserir letras em campos de preços ou quantidades, o sistema intercepta a exceção (`NumberFormatException`) e solicita os dados novamente sem interromper a execução.
-*   **Geração de Cupom Fiscal**: Impressão em consola do resumo da compra com alinhamento formatado de valores monetários.
+* **Versão V1 (VisuAlg - Lógica Estruturada):** Base do sistema construída com vetores paralelos, laços de repetição complexos e modularização (Procedimentos). Foco no desenvolvimento do raciocínio lógico e gestão de estado em memória.
+* **Versão V2 (Java - Orientação a Objetos):** Refatoração completa utilizando classes (`Produto`, `ItemVenda`, `Venda`), encapsulamento e listas dinâmicas (`ArrayList`). 
+  * Tratamento rigoroso de exceções (`try-catch`) para garantir a estabilidade do sistema contra erros de digitação do utilizador (letras em vez de números).
+  * Utilização da biblioteca `java.time.LocalDate` para automatização temporal.
 
-## 🛠️ Como Executar
+## 📦 Principais Funcionalidades
 
-### Versão VisuAlg
-1. Descarregue o ficheiro `Sistema_Caixa_CRUD.alg` da pasta correspondente.
-2. Abra o emulador VisuAlg 3.0 (ou superior).
-3. Cole o código e prima `F9` para executar.
+1. **Menu de Estoque Dinâmico:** Inclusão, Edição, Exclusão e Listagem de produtos (Mock data inicial de 10 hardwares reais).
+2. **Sistema de Frente de Caixa Inteligente:**
+   * Proíbe a venda de quantidades superiores ao stock disponível.
+   * Dá baixa automática (`estoque -= qtd`) no momento da compra.
+   * Permite múltiplas compras na mesma transação.
+3. **Geração de Cupão Fiscal:** Impressão em consola da Data, ID da Venda, Subtotais e Valor Final a pagar.
+4. **Relatórios Analíticos:**
+   * **Histórico Agrupado:** Exibe as transações separadas por ID de Venda e Data, facilitando a auditoria de fecho de caixa.
+   * **Lucratividade:** Calcula automaticamente o Custo Total dos Itens Vendidos versus o Faturamento Bruto, entregando o **Balanço Geral** e o **Lucro Líquido** da operação.
 
-### Versão Java
-1. Certifique-se de ter o JDK instalado na máquina.
-2. Abra o terminal na pasta `Java_Orientado_Objetos`.
-3. Compile o código executando: `javac SistemaCaixaCRUD.java`
-4. Execute o sistema com: `java SistemaCaixaCRUD`
+## 💻 Como executar o projeto (Versão Java)
 
-## 👨‍💻 Autor
+Certifique-se de que tem o [Java JDK](https://www.oracle.com/java/technologies/downloads/) instalado na sua máquina.
 
-Desenvolvido por **Daniel**
+1. Clone este repositório:
+   ```bash
+   git clone [https://github.com/Daniel-S-Oliveira-DeV/PDV-Console-System.git](https://github.com/Daniel-S-Oliveira-DeV/PDV-Console-System.git)

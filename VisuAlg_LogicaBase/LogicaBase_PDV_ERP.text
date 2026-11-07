@@ -1,0 +1,480 @@
+algoritmo "SistemaLojaInformatica_ERP"
+// Autor: Engenheiro de Software Sênior (Gemini) e Daniel Oliveira
+// Finalidade: ERP Completo com Frente de Caixa, Estoque Dinâmico e Relatórios
+
+var
+  // --- BANCO DE DADOS: ESTOQUE (Limite 100) ---
+  cod_prod: vetor [1..100] de inteiro
+  nome_prod: vetor [1..100] de caractere
+  custo_prod: vetor [1..100] de real
+  preco_prod: vetor [1..100] de real
+  qtd_estoque: vetor [1..100] de inteiro // NOVO: Controle de quantidade
+  total_produtos: inteiro
+
+  // --- BANCO DE DADOS: HISTÓRICO DE VENDAS (Limite 100 registros/linhas) ---
+  hist_id_venda: vetor [1..100] de inteiro
+  hist_data: vetor [1..100] de caractere
+  hist_cod: vetor [1..100] de inteiro
+  hist_nome: vetor [1..100] de caractere
+  hist_qtd: vetor [1..100] de inteiro
+  hist_custo_un: vetor [1..100] de real
+  hist_venda_un: vetor [1..100] de real
+  total_hist: inteiro
+  id_venda_global: inteiro
+  imprimiu_cabecalho: logico
+  fat_geral, lucro_geral: real
+
+  // --- VARIÁVEIS DE CONTROLE E NAVEGAÇÃO ---
+  opcao_main, opcao_sub: inteiro
+  i, j, cod_busca, pos_encontrada, qtd_venda: inteiro
+  data_atual, resp, tecla: caractere
+  
+  // Variáveis para cálculos temporários e relatórios
+  custo_linha, venda_linha: real
+  qtd_vendida_total: inteiro
+  fat_bruto, lucro_liquido, custo_acumulado: real
+  total_venda_atual: real 
+
+// ====================================================
+// PROCEDIMENTO: CABEÇALHO PADRÃO
+// ====================================================
+procedimento Cabecalho()
+inicio
+  limpatela
+  escreval("======================================================")
+  escreval("           TechStore - Sistema de Gestão ERP          ")
+  escreval("======================================================")
+  escreval("")
+fimprocedimento
+
+// ====================================================
+// PROCEDIMENTO: MOCK DATA (CARGA INICIAL DE 10 PRODUTOS)
+// ====================================================
+procedimento CarregarDadosIniciais()
+inicio
+  cod_prod[1] <- 101
+  nome_prod[1] <- "PLACA MAE ASUS B550M"
+  custo_prod[1] <- 500.00
+  preco_prod[1] <- 750.00
+  qtd_estoque[1] <- 10
+  
+  cod_prod[2] <- 102
+  nome_prod[2] <- "PROCESSADOR INTEL CORE I5 12400F"
+  custo_prod[2] <- 800.00
+  preco_prod[2] <- 1150.00
+  qtd_estoque[2] <- 10
+  
+  cod_prod[3] <- 103
+  nome_prod[3] <- "PROCESSADOR AMD RYZEN 5 5600G"
+  custo_prod[3] <- 750.00
+  preco_prod[3] <- 1050.00
+  qtd_estoque[3] <- 10
+  
+  cod_prod[4] <- 104
+  nome_prod[4] <- "MEMORIA RAM 16GB DDR4 KINGSTON"
+  custo_prod[4] <- 180.00
+  preco_prod[4] <- 280.00
+  qtd_estoque[4] <- 10
+  
+  cod_prod[5] <- 105
+  nome_prod[5] <- "SSD 1TB NVME M.2 KINGSTON"
+  custo_prod[5] <- 300.00
+  preco_prod[5] <- 450.00
+  qtd_estoque[5] <- 10
+  
+  cod_prod[6] <- 106
+  nome_prod[6] <- "PLACA DE VIDEO RTX 3060 12GB"
+  custo_prod[6] <- 1600.00
+  preco_prod[6] <- 2200.00
+  qtd_estoque[6] <- 10
+  
+  cod_prod[7] <- 107
+  nome_prod[7] <- "FONTE CORSAIR 650W 80 PLUS BRONZE"
+  custo_prod[7] <- 280.00
+  preco_prod[7] <- 420.00
+  qtd_estoque[7] <- 10
+  
+  cod_prod[8] <- 108
+  nome_prod[8] <- "GABINETE GAMER ATX VIDRO TEMPERADO"
+  custo_prod[8] <- 150.00
+  preco_prod[8] <- 290.00
+  qtd_estoque[8] <- 10
+  
+  cod_prod[9] <- 109
+  nome_prod[9] <- "MONITOR IPS 24 POL FULL HD LG"
+  custo_prod[9] <- 550.00
+  preco_prod[9] <- 780.00
+  qtd_estoque[9] <- 10
+  
+  cod_prod[10] <- 110
+  nome_prod[10] <- "KIT TECLADO E MOUSE MECANICO RGB"
+  custo_prod[10] <- 120.00
+  preco_prod[10] <- 220.00
+  qtd_estoque[10] <- 10
+  
+  total_produtos <- 10
+fimprocedimento
+
+// ====================================================
+// INÍCIO DO PROGRAMA PRINCIPAL
+// ====================================================
+inicio
+  CarregarDadosIniciais()
+  total_hist <- 0
+  id_venda_global <- 0
+
+  repita
+    Cabecalho()
+    escreval("---------------- MENU PRINCIPAL ----------------")
+    escreval(" 1 - Gerenciar Produtos (Estoque)")
+    escreval(" 2 - Realizar Venda (Frente de Caixa)")
+    escreval(" 3 - Relatórios e Faturamento")
+    escreval(" 4 - Sair do Sistema")
+    escreval("------------------------------------------------")
+    escreva("Escolha uma opção: ")
+    leia(opcao_main)
+
+    escolha opcao_main
+      // ====================================================
+      // MENU 1: GERENCIAR PRODUTOS (CRUD)
+      // ====================================================
+      caso 1
+        repita
+          Cabecalho()
+          escreval("--- SUBMENU: GERENCIAR PRODUTOS ---")
+          escreval(" 1 - Incluir Produto")
+          escreval(" 2 - Editar Produto")
+          escreval(" 3 - Excluir Produto")
+          escreval(" 4 - Listar Produtos")
+          escreval(" 0 - Voltar ao Menu Principal")
+          escreval("-----------------------------------")
+          escreva("Opção: ")
+          leia(opcao_sub)
+
+          escolha opcao_sub
+            caso 1
+              se (total_produtos < 100) entao
+                Cabecalho()
+                escreval("--- ATENÇÃO: PRODUTOS JÁ CADASTRADOS ---")
+                para i de 1 ate total_produtos faca
+                  escreval("[Cód: ", cod_prod[i], "] - Estoque: ", qtd_estoque[i], " | ", nome_prod[i])
+                fimpara
+                escreval("----------------------------------------")
+                escreval("")
+                
+                total_produtos <- total_produtos + 1
+                escreval("-- INSERIR NOVO PRODUTO --")
+                escreva("Código numérico: ")
+                leia(cod_prod[total_produtos])
+                escreva("Nome/Descrição (Maiúsculas): ")
+                leia(nome_prod[total_produtos])
+                escreva("Preço de Custo Unitário (R$): ")
+                leia(custo_prod[total_produtos])
+                escreva("Preço de Venda Unitário (R$): ")
+                leia(preco_prod[total_produtos])
+                escreva("Quantidade Inicial em Estoque: ")
+                leia(qtd_estoque[total_produtos])
+                escreval("Produto cadastrado! Pressione ENTER...")
+                leia(tecla)
+              senao
+                escreval("Banco de dados de produtos lotado!")
+                leia(tecla)
+              fimse
+
+            caso 2
+              Cabecalho()
+              escreval("--- ATENÇÃO: PRODUTOS JÁ CADASTRADOS ---")
+              para i de 1 ate total_produtos faca
+                escreval("[Cód: ", cod_prod[i], "] - Estoque: ", qtd_estoque[i], " | ", nome_prod[i])
+              fimpara
+              escreval("----------------------------------------")
+              escreval("")
+                
+              escreva("Digite o CÓDIGO do produto para editar: ")
+              leia(cod_busca)
+              pos_encontrada <- 0
+              para i de 1 ate total_produtos faca
+                se (cod_prod[i] = cod_busca) entao
+                  pos_encontrada <- i
+                fimse
+              fimpara
+
+              se (pos_encontrada > 0) entao
+                escreval("Editando: ", nome_prod[pos_encontrada])
+                escreva("Novo Código: ")
+                leia(cod_prod[pos_encontrada])
+                escreva("Novo Nome: ")
+                leia(nome_prod[pos_encontrada])
+                escreva("Novo Preço de Custo (R$): ")
+                leia(custo_prod[pos_encontrada])
+                escreva("Novo Preço de Venda (R$): ")
+                leia(preco_prod[pos_encontrada])
+                escreva("Nova Quantidade em Estoque: ")
+                leia(qtd_estoque[pos_encontrada])
+                escreval("Atualizado! Pressione ENTER...")
+              senao
+                escreval("Código não encontrado!")
+              fimse
+              leia(tecla)
+
+            caso 3
+              escreva("Digite o CÓDIGO do produto para excluir: ")
+              leia(cod_busca)
+              pos_encontrada <- 0
+              para i de 1 ate total_produtos faca
+                se (cod_prod[i] = cod_busca) entao
+                  pos_encontrada <- i
+                fimse
+              fimpara
+
+              se (pos_encontrada > 0) entao
+                para i de pos_encontrada ate total_produtos - 1 faca
+                  cod_prod[i] <- cod_prod[i+1]
+                  nome_prod[i] <- nome_prod[i+1]
+                  custo_prod[i] <- custo_prod[i+1]
+                  preco_prod[i] <- preco_prod[i+1]
+                  qtd_estoque[i] <- qtd_estoque[i+1]
+                fimpara
+                total_produtos <- total_produtos - 1
+                escreval("Produto excluído com sucesso!")
+              senao
+                escreval("Código não encontrado!")
+              fimse
+              leia(tecla)
+
+            caso 4
+              Cabecalho()
+              escreval("--- ESTOQUE ATUAL ---")
+              para i de 1 ate total_produtos faca
+                escreval("Cód: ", cod_prod[i], " | ", nome_prod[i])
+                escreval("   Estoque: ", qtd_estoque[i], " un | Custo Un: R$ ", custo_prod[i]:1:2, " | Venda Un: R$ ", preco_prod[i]:1:2)
+                escreval("-")
+              fimpara
+              escreva("Pressione ENTER para voltar...")
+              leia(tecla)
+          fimescolha
+        ate (opcao_sub = 0)
+
+      // ====================================================
+      // MENU 2: FRENTE DE CAIXA (REALIZAR VENDA)
+      // ====================================================
+      caso 2
+        Cabecalho()
+        escreval("--- NOVA VENDA ---")
+        escreva("Informe a Data da Venda (ex: DD/MM/AAAA): ")
+        leia(data_atual)
+        
+        id_venda_global <- id_venda_global + 1
+        
+        repita
+          se (total_hist >= 100) entao
+            escreval("Limite de memória de histórico atingido (100 linhas)!")
+            resp <- "N"
+          senao
+            escreval("")
+            escreval("--- PRODUTOS DISPONÍVEIS ---")
+            para i de 1 ate total_produtos faca
+              escreval("[Cód: ", cod_prod[i], "] - R$ ", preco_prod[i]:1:2, " | Estq: ", qtd_estoque[i], " | ", nome_prod[i])
+            fimpara
+            escreval("----------------------------")
+            
+            escreva("Digite o CÓDIGO do produto: ")
+            leia(cod_busca)
+            
+            pos_encontrada <- 0
+            para i de 1 ate total_produtos faca
+              se (cod_prod[i] = cod_busca) entao
+                pos_encontrada <- i
+              fimse
+            fimpara
+
+            se (pos_encontrada > 0) entao
+              escreval(">> Selecionado: ", nome_prod[pos_encontrada])
+              escreval(">> Valor Unitário: R$ ", preco_prod[pos_encontrada]:1:2)
+              escreva("Quantidade: ")
+              leia(qtd_venda)
+
+              // VALIDAÇÃO DE ESTOQUE
+              se (qtd_venda <= qtd_estoque[pos_encontrada]) entao
+                // Abate do estoque
+                qtd_estoque[pos_encontrada] <- qtd_estoque[pos_encontrada] - qtd_venda
+                
+                // Grava histórico
+                total_hist <- total_hist + 1
+                hist_id_venda[total_hist] <- id_venda_global
+                hist_data[total_hist] <- data_atual
+                hist_cod[total_hist] <- cod_prod[pos_encontrada]
+                hist_nome[total_hist] <- nome_prod[pos_encontrada]
+                hist_qtd[total_hist] <- qtd_venda
+                hist_custo_un[total_hist] <- custo_prod[pos_encontrada]
+                hist_venda_un[total_hist] <- preco_prod[pos_encontrada]
+                
+                escreval("--> Item adicionado ao carrinho! Estoque restante: ", qtd_estoque[pos_encontrada])
+              senao
+                escreval("ERRO: Estoque insuficiente! Você tem apenas ", qtd_estoque[pos_encontrada], " unidades disponíveis.")
+              fimse
+              
+            senao
+              escreval("ERRO: Produto não cadastrado!")
+            fimse
+            
+            escreval("")
+            escreva("Deseja passar mais um item nesta venda? (S/N): ")
+            leia(resp)
+          fimse
+        ate (resp = "N") ou (resp = "n")
+
+        // ----------------------------------------------------
+        // IMPRESSÃO DO CUPOM FISCAL
+        // ----------------------------------------------------
+        Cabecalho()
+        escreval("======================================================")
+        escreval("                  CUPOM FISCAL                        ")
+        escreval(" Data da Compra: ", data_atual)
+        escreval(" Venda ID: ", id_venda_global)
+        escreval("======================================================")
+        
+        total_venda_atual <- 0
+        
+        para i de 1 ate total_hist faca
+          se (hist_id_venda[i] = id_venda_global) entao
+            venda_linha <- hist_venda_un[i] * hist_qtd[i]
+            total_venda_atual <- total_venda_atual + venda_linha
+            
+            escreval(hist_nome[i])
+            escreval("  ", hist_qtd[i], " un  x  R$ ", hist_venda_un[i]:1:2, " = Subtotal: R$ ", venda_linha:1:2)
+            escreval("-")
+          fimse
+        fimpara
+        
+        escreval("======================================================")
+        escreval(" TOTAL A PAGAR: R$ ", total_venda_atual:1:2)
+        escreval("======================================================")
+        escreva("Pressione ENTER para fechar a venda e voltar ao menu...")
+        leia(tecla)
+        
+	// ====================================================
+      // MENU 3: RELATÓRIOS E FATURAMENTO
+      // ====================================================
+      caso 3
+        repita
+          Cabecalho()
+          escreval("--- SUBMENU: RELATÓRIOS E FATURAMENTO ---")
+          escreval(" 1 - Histórico Detalhado por Venda")
+          escreval(" 2 - Faturamento e Lucro por Produto")
+          escreval(" 0 - Voltar")
+          escreval("-----------------------------------------")
+          escreva("Opção: ")
+          leia(opcao_sub)
+
+          escolha opcao_sub
+            // --- 1. HISTÓRICO POR VENDA (AGRUPADO) ---
+            caso 1
+              Cabecalho()
+              escreval("--- HISTÓRICO DE VENDAS REALIZADAS ---")
+              se (id_venda_global = 0) entao
+                escreval("Nenhuma venda realizada ainda.")
+              senao
+                // Percorre por ID de Venda, não por linha solta
+                para i de 1 ate id_venda_global faca
+                  total_venda_atual <- 0
+                  imprimiu_cabecalho <- falso
+
+                  para j de 1 ate total_hist faca
+                    se (hist_id_venda[j] = i) entao
+                      // Imprime o cabeçalho da venda apenas uma vez
+                      se (imprimiu_cabecalho = falso) entao
+                        escreval("======================================")
+                        escreval(" VENDA ID: ", i, " | DATA: ", hist_data[j])
+                        escreval("======================================")
+                        imprimiu_cabecalho <- verdadeiro
+                      fimse
+                      
+                      venda_linha <- hist_venda_un[j] * hist_qtd[j]
+                      total_venda_atual <- total_venda_atual + venda_linha
+                      
+                      escreval(" -> ", hist_qtd[j], "x ", hist_nome[j])
+                      escreval("    Custo Un: R$ ", hist_custo_un[j]:1:2, " | Venda Un: R$ ", hist_venda_un[j]:1:2)
+                      escreval("    Subtotal: R$ ", venda_linha:1:2)
+                      escreval(" - - - - - - - - - - - - - - - - - - -")
+                    fimse
+                  fimpara
+                  
+                  // Se achou itens para esta venda, imprime o total dela
+                  se (imprimiu_cabecalho = verdadeiro) entao
+                    escreval(" TOTAL DA VENDA: R$ ", total_venda_atual:1:2)
+                    escreval("")
+                  fimse
+                fimpara
+              fimse
+              escreva("Pressione ENTER para voltar...")
+              leia(tecla)
+
+            // --- 2. FATURAMENTO COM TOTAIS GLOBAIS ---
+            caso 2
+              Cabecalho()
+              escreval("--- FATURAMENTO E LUCRO POR PRODUTO ---")
+              se (total_produtos = 0) entao
+                escreval("Estoque vazio.")
+              senao
+                fat_geral <- 0
+                lucro_geral <- 0
+                
+                para i de 1 ate total_produtos faca
+                  qtd_vendida_total <- 0
+                  fat_bruto <- 0
+                  custo_acumulado <- 0
+                  
+                  para j de 1 ate total_hist faca
+                    se (hist_cod[j] = cod_prod[i]) entao
+                      qtd_vendida_total <- qtd_vendida_total + hist_qtd[j]
+                      custo_acumulado <- custo_acumulado + (hist_custo_un[j] * hist_qtd[j])
+                      fat_bruto <- fat_bruto + (hist_venda_un[j] * hist_qtd[j])
+                    fimse
+                  fimpara
+
+                  se (qtd_vendida_total > 0) entao
+                    lucro_liquido <- fat_bruto - custo_acumulado
+                    
+                    // Soma para o total global da loja
+                    fat_geral <- fat_geral + fat_bruto
+                    lucro_geral <- lucro_geral + lucro_liquido
+
+                    escreval("Cód: ", cod_prod[i], " | ", nome_prod[i])
+                    escreval(" -> Unidades Vendidas: ", qtd_vendida_total)
+                    escreval(" -> Custo Total (Base): R$ ", custo_acumulado:1:2)
+                    escreval(" -> Faturamento Bruto: R$ ", fat_bruto:1:2)
+                    escreval(" -> LUCRO LÍQUIDO: R$ ", lucro_liquido:1:2)
+                    escreval("......................................")
+                  fimse
+                fimpara
+                
+                // RODAPÉ COM O RESUMO FINANCEIRO DA LOJA
+                escreval("")
+                escreval("======================================")
+                escreval("        BALANÇO GERAL DA LOJA         ")
+                escreval("======================================")
+                escreval(" FATURAMENTO TOTAL : R$ ", fat_geral:1:2)
+                escreval(" LUCRO LÍQUIDO TOTAL: R$ ", lucro_geral:1:2)
+                escreval("======================================")
+              fimse
+              escreva("Pressione ENTER para voltar...")
+              leia(tecla)
+          fimescolha
+        ate (opcao_sub = 0)
+      
+      // ====================================================
+      // MENU 4: SAIR
+      // ====================================================
+      caso 4
+        Cabecalho()
+        escreval("Encerrando o sistema TechStore...")
+        
+      outrocaso
+        escreval("Opção inválida!")
+        leia(tecla)
+    fimescolha
+    
+  ate (opcao_main = 4)
+
+fimalgoritmo
