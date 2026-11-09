@@ -1,0 +1,15 @@
+/home/daniel-souza-de-oliveira/Projetos DEV/GIT/PDV-Console-System/CSharp_DotNet/bin/Debug/net8.0/CSharp_DotNet
+/home/daniel-souza-de-oliveira/Projetos DEV/GIT/PDV-Console-System/CSharp_DotNet/bin/Debug/net8.0/CSharp_DotNet.deps.json
+/home/daniel-souza-de-oliveira/Projetos DEV/GIT/PDV-Console-System/CSharp_DotNet/bin/Debug/net8.0/CSharp_DotNet.runtimeconfig.json
+/home/daniel-souza-de-oliveira/Projetos DEV/GIT/PDV-Console-System/CSharp_DotNet/bin/Debug/net8.0/CSharp_DotNet.dll
+/home/daniel-souza-de-oliveira/Projetos DEV/GIT/PDV-Console-System/CSharp_DotNet/bin/Debug/net8.0/CSharp_DotNet.pdb
+/home/daniel-souza-de-oliveira/Projetos DEV/GIT/PDV-Console-System/CSharp_DotNet/obj/Debug/net8.0/CSharp_DotNet.GeneratedMSBuildEditorConfig.editorconfig
+/home/daniel-souza-de-oliveira/Projetos DEV/GIT/PDV-Console-System/CSharp_DotNet/obj/Debug/net8.0/CSharp_DotNet.AssemblyInfoInputs.cache
+/home/daniel-souza-de-oliveira/Projetos DEV/GIT/PDV-Console-System/CSharp_DotNet/obj/Debug/net8.0/CSharp_DotNet.AssemblyInfo.cs
+/home/daniel-souza-de-oliveira/Projetos DEV/GIT/PDV-Console-System/CSharp_DotNet/obj/Debug/net8.0/CSharp_DotNet.csproj.CoreCompileInputs.cache
+/home/daniel-souza-de-oliveira/Projetos DEV/GIT/PDV-Console-System/CSharp_DotNet/obj/Debug/net8.0/CSharp_DotNet.sourcelink.json
+/home/daniel-souza-de-oliveira/Projetos DEV/GIT/PDV-Console-System/CSharp_DotNet/obj/Debug/net8.0/CSharp_DotNet.dll
+/home/daniel-souza-de-oliveira/Projetos DEV/GIT/PDV-Console-System/CSharp_DotNet/obj/Debug/net8.0/refint/CSharp_DotNet.dll
+/home/daniel-souza-de-oliveira/Projetos DEV/GIT/PDV-Console-System/CSharp_DotNet/obj/Debug/net8.0/CSharp_DotNet.pdb
+/home/daniel-souza-de-oliveira/Projetos DEV/GIT/PDV-Console-System/CSharp_DotNet/obj/Debug/net8.0/CSharp_DotNet.genruntimeconfig.cache
+/home/daniel-souza-de-oliveira/Projetos DEV/GIT/PDV-Console-System/CSharp_DotNet/obj/Debug/net8.0/ref/CSharp_DotNet.dll

@@ -1,39 +1,39 @@
-# 🛒 TechStore - Sistema ERP de Gestão e Frente de Caixa
+# 🛒 TechStore - Micro-ERP & Frente de Caixa (Multi-Language)
 
-Este repositório contém a evolução de um sistema de vendas e gestão de stock para uma loja de informática (TechStore). O projeto demonstra a transição de uma lógica estruturada básica para uma arquitetura robusta em **Java Orientado a Objetos (OOP)**, atuando como um micro-ERP completo rodando diretamente no terminal.
+Este repositório documenta a evolução de um sistema de vendas e gestão de stock para uma loja de hardware (TechStore). Mais do que um simples registo de vendas, este projeto funciona como a **"Pedra de Roseta"** do meu portfólio de Engenharia de Software: demonstra a implementação das mesmas regras de negócio complexas através de diferentes linguagens e paradigmas de programação.
 
-## 🚀 O que este sistema faz?
+## 🎯 O Problema de Negócio (Domínio)
 
-Muito além de um simples registo de vendas, este sistema resolve problemas reais de gestão de loja, integrando três pilares fundamentais:
-- **Gestão de Materiais (Estoque):** CRUD completo com controlo dinâmico de quantidades.
-- **Frente de Caixa (PDV):** Validação em tempo real de disponibilidade de stock, captura automática de datas e geração de Cupão Fiscal detalhado.
-- **Balanço Financeiro:** Cruzamento do histórico de vendas com os custos de aquisição (COGS) para gerar relatórios de faturamento bruto e lucro líquido real.
+O sistema resolve desafios reais da gestão de uma loja física, integrando três pilares fundamentais numa única aplicação de consola:
+- **Gestão de Materiais (Estoque):** CRUD de produtos com controlo dinâmico de quantidades.
+- **Frente de Caixa (PDV):** Validação em tempo real (bloqueia vendas sem saldo em stock), baixa automática de unidades, captura autónoma de datas pelo sistema operativo e geração de Cupão Fiscal detalhado.
+- **Inteligência Financeira (Relatórios):** Cruzamento do histórico de transações com o Custo da Mercadoria Vendida (CMV/COGS). O sistema processa autonomamente a Faturação Bruta, o Lucro Líquido por produto e entrega o **Balanço Geral** (Bottom Line) agrupado da operação.
 
-## 🛠️ Tecnologias e Arquitetura
+## 🏗️ Arquitetura e Evolução Tecnológica
 
-O repositório está dividido para demonstrar a evolução da engenharia de software:
+O projeto está modularizado para demonstrar adaptabilidade e maturidade técnica técnica:
 
-* **Versão V1 (VisuAlg - Lógica Estruturada):** Base do sistema construída com vetores paralelos, laços de repetição complexos e modularização (Procedimentos). Foco no desenvolvimento do raciocínio lógico e gestão de estado em memória.
-* **Versão V2 (Java - Orientação a Objetos):** Refatoração completa utilizando classes (`Produto`, `ItemVenda`, `Venda`), encapsulamento e listas dinâmicas (`ArrayList`). 
-  * Tratamento rigoroso de exceções (`try-catch`) para garantir a estabilidade do sistema contra erros de digitação do utilizador (letras em vez de números).
-  * Utilização da biblioteca `java.time.LocalDate` para automatização temporal.
+### 1. 🟦 `VisuAlg_LogicaBase` (O Alicerce Estruturado)
+* **Conceitos:** Lógica de programação pura, vetores paralelos em memória, laços de repetição nativos e modularização via procedimentos.
+* **Objetivo:** Demonstrar o controlo de estado em memória e o raciocínio algorítmico sem o auxílio de bibliotecas prontas.
 
-## 📦 Principais Funcionalidades
+### 2. ☕ `Java_Orientado_Objetos` (O Padrão Corporativo Clássico)
+* **Conceitos:** Paradigma de Orientação a Objetos (OOP), Encapsulamento, tipagem estática e listas dinâmicas (`ArrayList`).
+* **Destaques:** 
+  * Tratamento rigoroso de exceções (`try-catch`) para evitar falhas do sistema perante *inputs* incorretos.
+  * Uso da API `java.time` para controlo temporal automático.
+  * Lógica de agrupamento de objetos `ItemVenda` dentro da entidade `Venda`.
 
-1. **Menu de Estoque Dinâmico:** Inclusão, Edição, Exclusão e Listagem de produtos (Mock data inicial de 10 hardwares reais).
-2. **Sistema de Frente de Caixa Inteligente:**
-   * Proíbe a venda de quantidades superiores ao stock disponível.
-   * Dá baixa automática (`estoque -= qtd`) no momento da compra.
-   * Permite múltiplas compras na mesma transação.
-3. **Geração de Cupão Fiscal:** Impressão em consola da Data, ID da Venda, Subtotais e Valor Final a pagar.
-4. **Relatórios Analíticos:**
-   * **Histórico Agrupado:** Exibe as transações separadas por ID de Venda e Data, facilitando a auditoria de fecho de caixa.
-   * **Lucratividade:** Calcula automaticamente o Custo Total dos Itens Vendidos versus o Faturamento Bruto, entregando o **Balanço Geral** e o **Lucro Líquido** da operação.
+### 3. 🟣 `CSharp_DotNet` (O Ecossistema Microsoft)
+* **Conceitos:** OOP moderna, Propriedades Automáticas (`{ get; set; }`) e coleções fortemente tipadas (`List<T>`).
+* **Destaques:** Utilização de **LINQ (Language Integrated Query)** e Expressões Lambda (`=>`) para extração rápida de relatórios financeiros e cruzamento de dados, simulando queries de bancos de dados.
 
-## 💻 Como executar o projeto (Versão Java)
+### 4. 🐍 `Python_Scripts` (Sintaxe Dinâmica e Minimalista)
+* **Conceitos:** Tipagem dinâmica, processamento rápido de dados e Orientação a Objetos nativa do Python.
+* **Destaques:** Utilização do decorador `@property` para cálculo automático de subtotais e *List Comprehensions* para otimizar a varredura do histórico de vendas com poucas linhas de código.
 
-Certifique-se de que tem o [Java JDK](https://www.oracle.com/java/technologies/downloads/) instalado na sua máquina.
+## 💻 Como Executar
 
-1. Clone este repositório:
-   ```bash
-   git clone [https://github.com/Daniel-S-Oliveira-DeV/PDV-Console-System.git](https://github.com/Daniel-S-Oliveira-DeV/PDV-Console-System.git)
+Clone o repositório para a sua máquina local:
+```bash
+git clone [https://github.com/Daniel-S-Oliveira-DeV/PDV-Console-System.git](https://github.com/Daniel-S-Oliveira-DeV/PDV-Console-System.git)
